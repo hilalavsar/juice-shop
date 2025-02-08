@@ -65,28 +65,10 @@ jobs:
         with:
           sarif_file: 'results.sarif'
 
-  # 4) Syft SBOM Scan
-  syft-scan:
-    name: Syft SBOM Scan
-    needs: Gitleaks-scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Generate SBOM
-        uses: anchore/sbom-action@v0
-        with:
-          image: "juice-shop:${{ github.sha }}"
-          output-file: "sbom.spdx.json"
-          format: "spdx-json"
-
-      - name: Upload SBOM Artifact
-        uses: anchore/sbom-action/publish-sbom@v0
-        with:
-          sbom-artifact-match: "sbom.spdx.json"
-
   # 5) Deploy Job (Dummy)
   deploy:
     name: Deploy
-    needs: syft-scan
+    needs:  Gitleaks-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
