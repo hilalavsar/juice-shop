@@ -41,7 +41,7 @@ jobs:
   # 3) Gitleaks-scan Job
   Gitleaks-scan:
     name: Gitleaks
-
+    needs: Sast-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -63,7 +63,7 @@ jobs:
   # 4) Syft SBOM Scan
   syft-scan:
     name: Syft SBOM Scan
-
+    needs: Gitleaks-scan
     runs-on: ubuntu-latest
     steps:
       - name: Generate SBOM
@@ -81,7 +81,7 @@ jobs:
   # 5) Deploy Job (Dummy)
   deploy:
     name: Deploy
-
+    needs: syft-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
