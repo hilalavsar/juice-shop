@@ -79,10 +79,9 @@ jobs:
           format: "spdx-json"
 
       - name: Upload SBOM Artifact
-        uses: actions/upload-artifact@v4
+      - uses: anchore/sbom-action/publish-sbom@v0
         with:
-          name: sbom-artifact
-          path: sbom.spdx.json
+          sbom-artifact-match: "sbom.spdx.json"
 
 
   zap_scan:
