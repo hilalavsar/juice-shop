@@ -47,7 +47,6 @@ jobs:
   # Bu job'ın çalışması için önce "zap_scan" job'ının tamamlanması gerekiyor.
   Gitleaks-scan:
     name: Gitleaks
-    needs: zap_scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -70,7 +69,6 @@ jobs:
   # Bu job'ın çalışması için önce "Gitleaks-scan" job'ının tamamlanması gerekiyor.
   syft-scan:
     name: Syft SBOM Scan
-    needs: Gitleaks-scan
     runs-on: ubuntu-latest
     steps:
       - name: Generate SBOM
