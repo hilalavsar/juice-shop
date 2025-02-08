@@ -7,39 +7,46 @@ on:
   pull_request:
 
 jobs:
+  # 1) Build Job
   build:
     name: Build
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Build an image from Dockerfile
         run: |
           docker build -t juice-shop:${{ github.sha }} .
 
+  # 2) SAST (Semgrep) Job
+  # Bu job'ın çalışması için önce "build" job'ının tamamlanması gerekiyor.
   Sast-scan:
-    name: Semgrep
+    name: SAST (Semgrep)
+    needs: build
     runs-on: ubuntu-20.04
     container: returntocorp/semgrep
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Semgrep Scan
         run: semgrep ci --config=auto --sarif --output=semgrep.sarif || true
 
       - name: Upload SARIF File
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'semgrep.sarif'
 
+  # 3) ZAP Scan Job
+  # Bu job'ın çalışması için önce "Sast-scan" job'ının tamamlanması gerekiyor.
   zap_scan:
-    name: Scan the webapplication
+    name: ZAP Full Scan
+    needs: Sast-scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: ZAP Scan
@@ -57,32 +64,38 @@ jobs:
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
 
+  # 4) Gitleaks-scan Job
+  # Bu job'ın çalışması için önce "zap_scan" job'ının tamamlanması gerekiyor.
   Gitleaks-scan:
     name: Gitleaks
+    needs: zap_scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: SecretScan
-        uses: gitleaks/gitleaks-action@v3
+        uses: gitleaks/gitleaks-action@v2
         env:
           GITLEAKS_ENABLE_UPLOAD_ARTIFACT: true
           GITLEAKS_ENABLE_SUMMARY: true
         continue-on-error: true
 
       - name: Upload
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'results.sarif'
 
+  # 5) Syft SBOM Scan
+  # Bu job'ın çalışması için önce "Gitleaks-scan" job'ının tamamlanması gerekiyor.
   syft-scan:
     name: Syft SBOM Scan
+    needs: Gitleaks-scan
     runs-on: ubuntu-latest
     steps:
       - name: Generate SBOM
-        uses: anchore/sbom-action@v3
+        uses: anchore/sbom-action@v0
         with:
           image: "juice-shop:${{ github.sha }}"
           output-file: "sbom.spdx.json"
