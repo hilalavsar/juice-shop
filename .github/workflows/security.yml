@@ -43,7 +43,6 @@ jobs:
   # Bu job'ın çalışması için önce "Sast-scan" job'ının tamamlanması gerekiyor.
   zap_scan:
     name: ZAP Full Scan
-    needs: Sast-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
