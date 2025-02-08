@@ -7,22 +7,27 @@ on:
   pull_request:
 
 jobs:
-  # 1) Build Job
-  build:
-    name: Build
-    runs-on: ubuntu-20.04
+  build-and-syft:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Build an image from Dockerfile
+      - name: Build Docker image
         run: |
           docker build -t juice-shop:${{ github.sha }} .
+
+      - name: Syft SBOM Scan
+        uses: anchore/sbom-action@v0
+        with:
+          image: "juice-shop:${{ github.sha }}"
+          output-file: "sbom.spdx.json"
+          format: "spdx-json"
 
   # 2) SAST (Semgrep) Job
   Sast-scan:
     name: SAST (Semgrep)
-    needs: build
+    needs: build-and-syft
     runs-on: ubuntu-20.04
     container: returntocorp/semgrep
     steps:
