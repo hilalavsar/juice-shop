@@ -67,7 +67,7 @@ jobs:
 
   # 5) Syft SBOM Scan
   # Bu job'ın çalışması için önce "Gitleaks-scan" job'ının tamamlanması gerekiyor.
-  syft-scan:
+   syft-scan:
     name: Syft SBOM Scan
     runs-on: ubuntu-latest
     steps:
@@ -79,9 +79,10 @@ jobs:
           format: "spdx-json"
 
       - name: Upload SBOM Artifact
-      - uses: anchore/sbom-action/publish-sbom@v0
+        uses: anchore/sbom-action/publish-sbom@v0
         with:
           sbom-artifact-match: "sbom.spdx.json"
+
 
 
   zap_scan:
