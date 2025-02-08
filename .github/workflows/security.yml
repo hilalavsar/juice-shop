@@ -57,11 +57,13 @@ jobs:
           target: 'https://demo.owasp-juice.shop/#/'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
+          sarif: 'true'                # SARIF üretimini açıyoruz
+          sarif_file_name: 'zap.sarif' # Üretilecek SARIF dosyasının adı
 
       - name: Upload Zap scan SARIF report
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: 'zap.sarif'
 
   # 4) Gitleaks-scan Job
   # Bu job'ın çalışması için önce "zap_scan" job'ının tamamlanması gerekiyor.
