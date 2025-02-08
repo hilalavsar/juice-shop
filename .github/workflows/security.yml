@@ -1,4 +1,4 @@
-name: build
+name: security-pipeline
 
 on:
   push:
@@ -20,7 +20,6 @@ jobs:
           docker build -t juice-shop:${{ github.sha }} .
 
   # 2) SAST (Semgrep) Job
-  # Bu job'ın çalışması için önce "build" job'ının tamamlanması gerekiyor.
   Sast-scan:
     name: SAST (Semgrep)
     needs: build
@@ -39,14 +38,10 @@ jobs:
         with:
           sarif_file: 'semgrep.sarif'
 
-  # 3) ZAP Scan Job
-  # Bu job'ın çalışması için önce "Sast-scan" job'ının tamamlanması gerekiyor.
- 
-
-  # 4) Gitleaks-scan Job
-  # Bu job'ın çalışması için önce "zap_scan" job'ının tamamlanması gerekiyor.
+  # 3) Gitleaks-scan Job
   Gitleaks-scan:
     name: Gitleaks
+    needs: Sast-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -65,10 +60,10 @@ jobs:
         with:
           sarif_file: 'results.sarif'
 
-  # 5) Syft SBOM Scan
-  # Bu job'ın çalışması için önce "Gitleaks-scan" job'ının tamamlanması gerekiyor.
-   syft-scan:
+  # 4) Syft SBOM Scan
+  syft-scan:
     name: Syft SBOM Scan
+    needs: Gitleaks-scan
     runs-on: ubuntu-latest
     steps:
       - name: Generate SBOM
@@ -83,10 +78,22 @@ jobs:
         with:
           sbom-artifact-match: "sbom.spdx.json"
 
+  # 5) Deploy Job (Dummy)
+  deploy:
+    name: Deploy
+    needs: syft-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      - name: Dummy Deploy Step
+        run: echo "Deploying app... (This is a dummy step)"
 
+  # 6) ZAP Scan Job
   zap_scan:
     name: ZAP Full Scan
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
