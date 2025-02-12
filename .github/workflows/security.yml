@@ -24,6 +24,7 @@ jobs:
           output-file: "sbom.spdx.json"
           format: "spdx-json"
 
+  # 2) SAST (Semgrep) Job
   Sast-scan:
     name: SAST (Semgrep)
     needs: build-and-syft
@@ -36,18 +37,13 @@ jobs:
       - name: Semgrep Scan
         run: semgrep ci --config=auto --sarif --output=semgrep.sarif || true
 
-      - name: Upload SARIF File (Semgrep)
+      - name: Upload SARIF File
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'semgrep.sarif'
 
-      - name: Upload Semgrep Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: semgrep-sarif
-          path: semgrep.sarif
-
+  # 3) Gitleaks-scan Job
   Gitleaks-scan:
     name: Gitleaks
     needs: Sast-scan
@@ -56,36 +52,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: SecretScan (Gitleaks)
+      - name: SecretScan
         uses: gitleaks/gitleaks-action@v2
         env:
           GITLEAKS_ENABLE_UPLOAD_ARTIFACT: true
           GITLEAKS_ENABLE_SUMMARY: true
         continue-on-error: true
 
-      - name: Upload SARIF File (Gitleaks)
+      - name: Upload
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'results.sarif'
 
-      - name: Rename SARIF File to gitleaks.sarif
-        run: |
-          if [ -f results.sarif ]; then
-            mv results.sarif gitleaks.sarif
-          else
-            echo "results.sarif bulunamadı."
-          fi
-
-      - name: Upload Gitleaks Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: gitleaks-sarif
-          path: gitleaks.sarif
-
+  # 5) Deploy Job (Dummy)
   deploy:
     name: Deploy
-    needs: Gitleaks-scan
+    needs:  Gitleaks-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -94,6 +77,7 @@ jobs:
       - name: Dummy Deploy Step
         run: echo "Deploying app... (This is a dummy step)"
 
+  # 6) ZAP Scan Job
   zap_scan:
     name: ZAP Full Scan
     needs: deploy
@@ -110,6 +94,7 @@ jobs:
           target: 'https://demo.owasp-juice.shop/#/'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
+
 
   import-defectdojo:
     name: Import Scans to DefectDojo
