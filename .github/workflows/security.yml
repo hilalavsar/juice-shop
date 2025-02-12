@@ -113,7 +113,7 @@ jobs:
 
   import-defectdojo:
     name: Import Scans to DefectDojo
-    needs: [Sast-scan, Gitleaks-scan]
+    needs: zap_scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -137,7 +137,11 @@ jobs:
           path: .
 
       - name: Import Semgrep SARIF to DefectDojo
+        env:
+          DEFECTDOJO_API_TOKEN: ${{ secrets.DEFECTDOJO_API_TOKEN }}
         run: python import_scan.py semgrep.sarif
 
-      - name: Import Gitleaks SARIF to DefectDojo
-        run: python import_scan.py gitleaks.sarif
+      - name: Import GitLeaks SARIF to DefectDojo
+        env:
+          DEFECTDOJO_API_TOKEN: ${{ secrets.DEFECTDOJO_API_TOKEN }}
+        run: python import_scan.py gitleaks-sarif
