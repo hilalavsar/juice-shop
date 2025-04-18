@@ -28,7 +28,7 @@ jobs:
   Sast-scan:
     name: SAST (Semgrep)
     needs: build-and-syft
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     container: returntocorp/semgrep
     steps:
       - name: Checkout code
