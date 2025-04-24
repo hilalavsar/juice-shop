@@ -27,7 +27,7 @@ jobs:
   # 2) SAST (Semgrep) Job
   Sast-scan:
     name: SAST (Semgrep)
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     container: returntocorp/semgrep
     steps:
       - name: Checkout code
