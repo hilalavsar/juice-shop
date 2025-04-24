@@ -8,6 +8,7 @@ def main():
     valid_files = {
         "results.sarif": "SARIF",
         "semgrep.sarif": "SARIF",
+        "zap-report.xml" "ZAP Scan"
 
     }
 
