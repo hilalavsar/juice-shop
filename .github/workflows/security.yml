@@ -110,13 +110,13 @@ jobs:
           python-version: '3.x'
 
       - name: Download Semgrep Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: semgrep-sarif
           path: .
 
       - name: Download Gitleaks Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: gitleaks-sarif
           path: .
