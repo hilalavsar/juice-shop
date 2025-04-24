@@ -133,4 +133,4 @@ jobs:
       - name: Import GitLeaks SARIF to DefectDojo
         env:
           DEFECTDOJO_API_TOKEN: ${{ secrets.DEFECTDOJO_API_TOKEN }}
-        run: python import_scan.py gitleaks-sarif
+        run: python import_scan.py results.sarif
