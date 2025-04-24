@@ -111,11 +111,9 @@ jobs:
           -v ${{ github.workspace }}/zap-output:/zap/wrk/:rw \
           ictu/zap2docker-weekly zap-baseline.py \
           -t https://example.com \
-          -r zap-report.html \
           -x zap-report.xml \
-          -J zap-report.json \
-          -w zap-output/warnings.txt \
-          -I
+          -I 
+      
    
       - name: Upload ZAP XML report as artifact
         uses: actions/upload-artifact@v4
