@@ -90,28 +90,37 @@ jobs:
 
       - name: Dummy Deploy Step
         run: echo "Deploying app... (This is a dummy step)"
-
+ 
   # 6) ZAP Scan Job
   zap_scan:
-    name: ZAP Full Scan (XML)
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      name: ZAP Baseline Scan with XML Report
+      needs: deploy
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Run ZAP Docker for XML report
-      run: |
+      - name: Create ZAP output directory
+        run: mkdir -p zap-output
+
+      - name: Run ZAP Baseline Scan (with XML report)
+        run: |
          docker run --rm \
-          -v ${{ github.workspace }}/zap-output:/zap/wrk \
-          ghcr.io/zaproxy/zaproxy:stable zap.sh \
-          -cmd -quickurl https://example.com \
-          -quickout /zap/wrk/zap_report.xml
+          -v ${{ github.workspace }}/zap-output:/zap/wrk/:rw \
+          owasp/zap2docker-weekly zap-baseline.py \
+          -t https://example.com \
+          -r zap-report.html \
+          -x zap-report.xml \
+          -J zap-report.json \
+          -w zap-output/warnings.txt \
+          -I
+   
+      - name: Upload ZAP XML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+           name: zap-xml-report
+           path: zap-output/zap-report.xml
 
-    - name: Upload XML report as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: zap-xml-report
-        path: /zap/wrk/zap_report.xml
 
 
   import-defectdojo:
