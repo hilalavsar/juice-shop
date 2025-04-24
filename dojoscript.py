@@ -9,7 +9,7 @@ def main():
         "gitleaks.sarif": "Gitleaks SARIF Scan",
         "gitleaks.json": "Gitleaks Scan",
         "results.sarif": "Gitleaks Scan",
-        "semgrep.sarif": "Semgrep SARIF Scan",
+        "semgrep.sarif": "SARIF,
         "semgrep.json": "Semgrep JSON Report"
     }
 
