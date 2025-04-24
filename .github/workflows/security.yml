@@ -131,8 +131,7 @@ jobs:
       - name: Download Gitleaks Artifact
         uses: actions/download-artifact@v4
         with:
-          name: results-sarif
-          path: results.sarif
+          name: results.sarif
 
       - name: Import Semgrep SARIF to DefectDojo
         env:
