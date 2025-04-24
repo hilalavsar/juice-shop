@@ -67,7 +67,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
-          sarif_file: 'gitleaks.sarif'
+          sarif_file: 'results.sarif'
 
   # 5) Deploy Job (Dummy)
   deploy:
@@ -122,7 +122,7 @@ jobs:
       - name: Download Gitleaks Artifact
         uses: actions/download-artifact@v3
         with:
-          name: gitleaks.sarif
+          name: results.sarif
           path: .
 
       - name: Import Semgrep SARIF to DefectDojo
