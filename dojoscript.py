@@ -39,7 +39,7 @@ def main():
         "active": True,
         "verified": True,
         "minimum_severity": "Low",
-        "engagement": 3
+        "engagement": 4
     }
 
     for file_name in files_to_import:
