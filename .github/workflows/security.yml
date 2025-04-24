@@ -32,7 +32,7 @@ jobs:
     container: returntocorp/semgrep
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Semgrep Scan
         run: semgrep ci --config=auto --sarif --output=semgrep.sarif || true
