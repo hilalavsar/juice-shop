@@ -72,6 +72,13 @@ jobs:
         with:
           sarif_file: 'results.sarif'
 
+      - name: Upload gitleaks report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results.sarif
+          path: .
+
   # 5) Deploy Job (Dummy)
   deploy:
     name: Deploy
