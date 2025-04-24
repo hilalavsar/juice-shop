@@ -38,7 +38,7 @@ jobs:
         run: semgrep ci --config=auto --sarif --output=semgrep.sarif || true
 
       - name: Upload SARIF File
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: 'semgrep.sarif'
@@ -60,7 +60,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: 'results.sarif'
