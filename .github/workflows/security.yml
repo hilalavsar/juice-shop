@@ -107,7 +107,7 @@ jobs:
         run: |
          docker run --rm \
           -v ${{ github.workspace }}/zap-output:/zap/wrk/:rw \
-          owasp/zap2docker-weekly zap-baseline.py \
+          ictu/zap2docker-weekly zap-baseline.py \
           -t https://example.com \
           -r zap-report.html \
           -x zap-report.xml \
