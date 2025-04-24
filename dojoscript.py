@@ -8,8 +8,7 @@ def main():
     valid_files = {
         "results.sarif": "SARIF",
         "semgrep.sarif": "SARIF",
-        "zap-report.xml" "ZAP Scan"
-
+        "zap-report.xml" "ZAP Scan",
     }
 
     # Eğer komut satırı argümanları verilmişse, onları kullan; aksi halde çalışma dizininde bulunan dosyalar üzerinden devam et.
