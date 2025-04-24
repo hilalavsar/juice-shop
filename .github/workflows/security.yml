@@ -136,9 +136,9 @@ jobs:
       - name: Import Semgrep SARIF to DefectDojo
         env:
           DEFECTDOJO_API_TOKEN: ${{ secrets.DEFECTDOJO_API_TOKEN }}
-        run: python import_scan.py semgrep.sarif
+        run: python dojoscript.py semgrep.sarif
 
       - name: Import GitLeaks SARIF to DefectDojo
         env:
           DEFECTDOJO_API_TOKEN: ${{ secrets.DEFECTDOJO_API_TOKEN }}
-        run: python import_scan.py results.sarif
+        run: python dojoscript.py results.sarif
