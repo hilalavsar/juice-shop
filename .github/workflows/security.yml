@@ -45,7 +45,6 @@ jobs:
   # 3) Gitleaks-scan Job
   Gitleaks-scan:
     name: Gitleaks
-    needs: Sast-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
