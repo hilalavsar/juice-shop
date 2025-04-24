@@ -6,11 +6,9 @@ import requests
 def main():
     # Desteklenen dosya isimleri ve DefectDojo'da kullanılacak scan_type değerleri
     valid_files = {
-        "gitleaks.sarif": "Gitleaks SARIF Scan",
-        "gitleaks.json": "Gitleaks Scan",
-        "results.sarif": "Gitleaks Scan",
-        "semgrep.sarif": "SARIF,
-        "semgrep.json": "Semgrep JSON Report"
+        "results.sarif": "SARIF",
+        "semgrep.sarif": "SARIF",
+
     }
 
     # Eğer komut satırı argümanları verilmişse, onları kullan; aksi halde çalışma dizininde bulunan dosyalar üzerinden devam et.
